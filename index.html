@@ -35,23 +35,83 @@
         .border-emerald-theme { border-color: #047857; }
         .text-emerald-light { color: #10b981; }
 
-        /* Hide elements that don't match the active filter */
+        /* Hide elements for isotope filtering */
         .filter-hidden { display: none !important; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    </style>
+</head>
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ByteTrip Agent</title>
+    
+    <!-- PWA META TAGS -->
+    <meta name="theme-color" content="#047857">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="https://placehold.co/192x192/047857/ffffff.png?text=BTA">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        
+        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        
+        .mobile-app-container { width: 100%; max-width: 414px; height: 100vh; max-height: 896px; background-color: #ffffff; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
+        @media (min-width: 415px) { .mobile-app-container { height: 850px; border-radius: 32px; border: 8px solid #333; } }
+
+        .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #f8fafc; animation: fadeIn 0.2s ease-in-out; }
+        .screen.active { display: flex; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+
+        .scrollable-content { -ms-overflow-style: none; scrollbar-width: none; flex-grow: 1; overflow-y: auto; }
+        .scrollable-content::-webkit-scrollbar { display: none; }
+
+        .text-emerald-theme { color: #047857; }
+        .bg-emerald-theme { background-color: #047857; }
+        .border-emerald-theme { border-color: #047857; }
+        .text-emerald-light { color: #10b981; }
+
+        /* Hide elements for isotope filtering */
+        .filter-hidden { display: none !important; }
+        .hide-scrollbar::-webkit-scrollbar { display: none; }
+        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     </style>
 </head>
 <body>
 
     <div class="mobile-app-container">
 
+        <!-- GLOBAL MODAL NOTIFICATION (PENGGANTI TOAST & ALERT) -->
+        <div id="global-modal-overlay" class="absolute inset-0 bg-slate-900/60 z-[100] hidden opacity-0 transition-opacity duration-300 flex items-center justify-center px-6">
+            <div id="global-modal-card" class="bg-white w-full max-w-[320px] rounded-2xl pt-10 pb-6 px-6 relative transform scale-95 transition-transform duration-300 text-center shadow-2xl">
+                <!-- Overlapping Icon -->
+                <div id="global-modal-icon-bg" class="absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center border-4 border-white shadow-sm">
+                    <i id="global-modal-icon" class="fas fa-check text-white text-2xl"></i>
+                </div>
+                
+                <h3 id="global-modal-title" class="text-[18px] font-bold text-slate-900 mb-2 mt-1">Berhasil</h3>
+                <p id="global-modal-message" class="text-[13px] text-slate-500 mb-6 leading-relaxed">Pesan berhasil ditampilkan.</p>
+                
+                <button onclick="hideGlobalModal()" id="global-modal-btn" class="w-full bg-emerald-500 text-white rounded-xl py-3.5 text-[15px] font-bold shadow-md hover:bg-emerald-600 transition-colors active:scale-95">Selesai</button>
+            </div>
+        </div>
+
         <!-- ============================================== -->
         <!-- SCREEN 0: LOGIN                                -->
         <!-- ============================================== -->
         <div id="screen-login" class="screen active bg-white">
             <div class="flex-1 flex flex-col justify-center px-8 relative z-10">
+                
                 <div class="text-center mb-10">
-                    <div class="w-20 h-20 bg-emerald-theme text-white rounded-2xl flex items-center justify-center font-bold text-4xl mx-auto mb-4 shadow-lg shadow-emerald-700/30">S</div>
-                    <h1 class="text-2xl font-extrabold text-slate-900">ByteTrip Agent</h1>
-                    <p class="text-[13px] text-slate-500 mt-1">Sistem Afiliasi & Kemitraan Umroh</p>
+                    <img src="img/ByteTripAgent_logo.jpg" alt="ByteTrip Agent Logo" class="h-24 mx-auto mb-2 object-contain mix-blend-multiply">
+                    <p class="text-[13px] text-slate-500 mt-2">Sistem Afiliasi & Kemitraan Travel</p>
                 </div>
 
                 <div class="flex flex-col gap-4 mb-8">
@@ -63,7 +123,6 @@
                         <label class="block text-[12px] font-bold text-slate-700 mb-1.5">Password</label>
                         <input type="password" id="login-password" placeholder="••••••••" class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] focus:outline-none focus:border-emerald-theme focus:ring-1 focus:ring-emerald-theme transition-colors bg-slate-50">
                     </div>
-                    <!-- Revisi Teks Button -->
                     <button onclick="handleLogin()" class="w-full bg-emerald-theme text-white rounded-xl py-3.5 text-[15px] font-bold shadow-md shadow-emerald-700/30 active:scale-95 transition-transform mt-2">Masuk</button>
                 </div>
 
@@ -91,9 +150,8 @@
         <div id="screen-dashboard" class="screen">
             
             <header class="flex justify-between items-center px-5 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
-                <div class="flex items-center gap-2">
-                    <div class="w-8 h-8 bg-emerald-theme text-white rounded-lg flex items-center justify-center font-bold text-lg">S</div>
-                    <div class="text-[20px] font-bold text-emerald-theme tracking-tight">ByteTrip Agent</div>
+                <div class="flex items-center">
+                    <img src="img/ByteTripAgent_logo.jpg" alt="ByteTrip Agent" class="h-9 object-contain mix-blend-multiply">
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="toggleNotifMenu(true)" class="relative cursor-pointer text-slate-800 hover:text-emerald-theme transition-colors">
@@ -106,26 +164,7 @@
             <div class="scrollable-content px-5 pb-28 pt-5">
                 <div class="mb-5">
                     <h1 class="text-xl font-bold text-slate-900">Halo, Budi Santoso</h1>
-                    <!-- Role badge di set via JS -->
-                    <p id="role-badge" class="text-xs text-emerald-light font-medium mt-1">⭐ Afiliator Premium</p>
-                </div>
-
-                <div id="reseller-actions" class="mb-5 hidden">
-                    <h2 class="text-[13px] font-bold text-slate-900 mb-3">Menu Operasional Reseller</h2>
-                    <div class="grid grid-cols-3 gap-3">
-                        <button onclick="alert('Buka Form Input Jamaah')" class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 active:bg-slate-50 transition-colors">
-                            <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path></svg></div>
-                            <span class="text-[10px] font-bold text-slate-700 text-center leading-tight">Input<br>Jamaah</span>
-                        </button>
-                        <button onclick="alert('Buka Scanner Paspor')" class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 active:bg-slate-50 transition-colors">
-                            <div class="w-10 h-10 rounded-full bg-orange-50 text-orange-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 21h7a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v11m0 5l4.879-4.879m0 0a3 3 0 104.243-4.242 3 3 0 00-4.243 4.242z"></path></svg></div>
-                            <span class="text-[10px] font-bold text-slate-700 text-center leading-tight">Upload<br>Paspor</span>
-                        </button>
-                        <button onclick="alert('Buka Daftar Tagihan')" class="bg-white p-3 rounded-xl shadow-sm border border-slate-100 flex flex-col items-center justify-center gap-2 active:bg-slate-50 transition-colors">
-                            <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 14l6-6m-5.5.5h.01m4.99 5h.01M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16l3.5-2 3.5 2 3.5-2 3.5 2z"></path></svg></div>
-                            <span class="text-[10px] font-bold text-slate-700 text-center leading-tight">Tagihan &<br>DP</span>
-                        </button>
-                    </div>
+                    <p id="role-badge" class="text-xs text-emerald-light font-medium mt-1">⭐ Afiliator</p>
                 </div>
 
                 <div class="bg-gradient-to-br from-emerald-600 to-emerald-800 rounded-2xl p-5 shadow-lg text-white relative overflow-hidden">
@@ -152,19 +191,49 @@
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
                         </div>
                         <h3 class="text-[12px] font-semibold text-slate-500 leading-snug">Closing Berhasil</h3>
-                        <div class="text-[20px] font-bold text-slate-900 mt-1">12 <span class="text-[10px] font-medium text-slate-400">Jamaah</span></div>
+                        <div class="text-[20px] font-bold text-slate-900 mt-1">12 <span class="text-[10px] font-medium text-slate-400">Customer</span></div>
+                    </div>
+                </div>
+
+                <div id="reseller-actions" class="mt-6 mb-2 hidden">
+                    <h2 class="text-[14px] font-bold text-slate-900 mb-3">Operasional Reseller</h2>
+                    <div class="grid grid-cols-2 gap-3">
+                        <div onclick="navTo('screen-pelanggan')" class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex flex-col gap-3 cursor-pointer active:scale-95 transition-transform">
+                            <div class="flex items-center justify-between">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-users text-lg"></i>
+                                </div>
+                                <span class="text-2xl font-black text-slate-800">12</span>
+                            </div>
+                            <div>
+                                <h3 class="text-[13px] font-bold text-slate-900 leading-tight">Pelanggan</h3>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Total Terdaftar</p>
+                            </div>
+                        </div>
+                        <div onclick="navTo('screen-transactions')" class="bg-white rounded-xl shadow-sm border border-slate-100 p-4 flex flex-col gap-3 cursor-pointer active:scale-95 transition-transform">
+                            <div class="flex items-center justify-between">
+                                <div class="w-10 h-10 rounded-full bg-red-50 text-red-600 flex items-center justify-center shrink-0">
+                                    <i class="fas fa-file-invoice-dollar text-lg"></i>
+                                </div>
+                                <span class="text-2xl font-black text-red-600">2</span>
+                            </div>
+                            <div>
+                                <h3 class="text-[13px] font-bold text-slate-900 leading-tight">Tagihan</h3>
+                                <p class="text-[10px] text-slate-500 mt-0.5">Menunggu Pelunasan</p>
+                            </div>
+                        </div>
                     </div>
                 </div>
 
                 <div class="mt-6 flex justify-between items-end mb-3">
-                    <h2 class="text-[15px] font-bold text-slate-900">Prospek Produk & Kuota</h2>
+                    <h2 class="text-[15px] font-bold text-slate-900">Produk Travel Cepat</h2>
                     <span onclick="navTo('screen-products')" class="text-[11px] font-bold text-emerald-theme cursor-pointer">Lihat Semua</span>
                 </div>
                 
                 <div class="flex flex-col gap-3">
                     <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm border border-slate-100">
                         <div class="w-14 h-14 rounded-lg bg-slate-100 overflow-hidden shrink-0">
-                            <img src="https://images.unsplash.com/photo-1506459225024-1428097a7e18?auto=format&fit=crop&q=80&w=150&h=150" class="w-full h-full object-cover">
+                            <img src="img/Travel_package_flyer_promotion_10f63d13.jpg" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
                             <h4 class="text-[13px] font-bold text-slate-900 leading-tight">Umroh Plus Turki (12 Hr)</h4>
@@ -181,18 +250,18 @@
                     
                     <div class="bg-white rounded-xl p-3 flex items-center gap-3 shadow-sm border border-slate-100">
                         <div class="w-14 h-14 rounded-lg bg-slate-100 overflow-hidden shrink-0">
-                            <img src="https://images.unsplash.com/photo-1580418827493-f2b22c0a76cb?auto=format&fit=crop&q=80&w=150&h=150" class="w-full h-full object-cover">
+                            <img src="img/School_holiday_trip_flyer_1dc6f200.jpg" class="w-full h-full object-cover">
                         </div>
                         <div class="flex-1">
-                            <h4 class="text-[13px] font-bold text-slate-900 leading-tight">Umroh Reguler Ramadhan</h4>
-                            <p class="text-[11px] text-slate-500 mt-0.5">Keberangkatan: 10 Mar 2027</p>
+                            <h4 class="text-[13px] font-bold text-slate-900 leading-tight">Liburan Sekolah ke Salju New Zealand</h4>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Keberangkatan: 15 Jul 2027</p>
                             <div class="mt-1.5 w-full bg-slate-100 rounded-full h-1.5">
-                                <div class="bg-emerald-500 h-1.5 rounded-full" style="width: 45%"></div>
+                                <div class="bg-blue-500 h-1.5 rounded-full" style="width: 70%"></div>
                             </div>
                         </div>
                         <div class="text-right shrink-0">
                             <div class="text-[10px] text-slate-500 font-medium">Sisa Seat</div>
-                            <div class="text-[16px] font-extrabold text-emerald-theme">25</div>
+                            <div class="text-[16px] font-extrabold text-blue-600">12</div>
                         </div>
                     </div>
                 </div>
@@ -200,15 +269,148 @@
         </div>
 
         <!-- ============================================== -->
+        <!-- SCREEN: DAFTAR PELANGGAN (RESELLER ONLY)       -->
+        <!-- ============================================== -->
+        <div id="screen-pelanggan" class="screen bg-slate-50">
+            <header class="flex items-center justify-between px-4 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
+                <button onclick="navTo('screen-dashboard')" class="text-slate-800 p-1 -ml-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Daftar Pelanggan</h1>
+                <div class="w-8"></div>
+            </header>
+            <div class="px-4 py-3 bg-white border-b border-slate-100 shrink-0 shadow-sm z-10">
+                <input type="text" placeholder="Cari nama pelanggan..." class="w-full border border-slate-300 rounded-lg px-4 py-2.5 text-[12px] font-medium text-slate-700 outline-none focus:border-emerald-theme bg-slate-50">
+            </div>
+
+            <div class="scrollable-content px-4 pt-4 pb-28 space-y-3 relative">
+                
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-[14px] font-bold text-slate-900">Siti Aminah</span>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Umroh Plus Turkiye Syawal</p>
+                        </div>
+                        <div class="bg-emerald-100 text-emerald-700 text-[9px] font-bold px-2 py-1 rounded tracking-wide">BOOKED</div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-3 mt-2">
+                        <button onclick="navTo('screen-upload-paspor')" class="w-full py-2 bg-orange-50 text-orange-600 rounded-lg text-[12px] font-bold flex justify-center items-center gap-2 hover:bg-orange-100 transition-colors">
+                            <i class="fas fa-id-card"></i> Upload Paspor
+                        </button>
+                    </div>
+                </div>
+
+                <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <span class="text-[14px] font-bold text-slate-900">Bapak Sulaiman</span>
+                            <p class="text-[11px] text-slate-500 mt-0.5">Umroh Plus Aqsa 12 Hari</p>
+                        </div>
+                        <div class="bg-blue-100 text-blue-600 text-[9px] font-bold px-2 py-1 rounded tracking-wide">PROSPEK</div>
+                    </div>
+                    <div class="border-t border-slate-100 pt-3 mt-2">
+                        <button onclick="navTo('screen-upload-paspor')" class="w-full py-2 bg-orange-50 text-orange-600 rounded-lg text-[12px] font-bold flex justify-center items-center gap-2 hover:bg-orange-100 transition-colors">
+                            <i class="fas fa-id-card"></i> Upload Paspor
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <button onclick="navTo('screen-input-customer')" class="absolute bottom-6 right-6 w-14 h-14 bg-emerald-theme text-white rounded-full flex items-center justify-center shadow-lg shadow-emerald-700/40 active:scale-95 transition-transform z-20">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+            </button>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN: INPUT CUSTOMER (RESELLER)              -->
+        <!-- ============================================== -->
+        <div id="screen-input-customer" class="screen bg-slate-50">
+            <header class="flex items-center justify-between px-4 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
+                <button onclick="navTo('screen-pelanggan')" class="text-slate-800 p-1 -ml-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Input Customer Baru</h1>
+                <div class="w-8"></div>
+            </header>
+            <div class="scrollable-content px-5 pt-6 pb-28">
+                <div class="bg-blue-50 border border-blue-100 rounded-xl p-4 mb-6 flex gap-3 text-blue-800 text-[12px] leading-relaxed">
+                    <svg class="w-5 h-5 shrink-0 text-blue-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    <span>Pastikan NIK dan Nama sesuai KTP untuk keperluan manifest tiket penerbangan dan pengajuan visa.</span>
+                </div>
+
+                <div class="flex flex-col gap-4">
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-900 mb-1.5">Nama Sesuai KTP</label>
+                        <input type="text" placeholder="Masukkan nama lengkap" class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-900 mb-1.5">NIK KTP</label>
+                        <input type="number" placeholder="16 digit NIK" class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-900 mb-1.5">Nomor WhatsApp</label>
+                        <input type="tel" placeholder="Contoh: 0812345..." class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-900 mb-1.5">Pilih Paket Travel</label>
+                        <select class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] font-medium text-slate-800 focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                            <option>Pilih Paket...</option>
+                            <option>Umroh Reguler 9 Hari</option>
+                            <option>Umroh Promo + Turkiye Syawal</option>
+                            <option>Umroh Plus Aqsa 12 Hari</option>
+                            <option>Liburan Sekolah ke Salju New Zealand</option>
+                            <option>Petualangan Eksotis Raja Ampat</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button onclick="showGlobalModal('Tersimpan', 'Data customer berhasil disimpan ke sistem Odoo!'); navTo('screen-pelanggan');" class="w-full mt-8 bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Simpan Data Customer</button>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN: UPLOAD PASPOR (RESELLER)               -->
+        <!-- ============================================== -->
+        <div id="screen-upload-paspor" class="screen bg-slate-50">
+            <header class="flex items-center justify-between px-4 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
+                <button onclick="navTo('screen-pelanggan')" class="text-slate-800 p-1 -ml-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Upload Paspor</h1>
+                <div class="w-8"></div>
+            </header>
+            <div class="scrollable-content px-5 pt-6 pb-28">
+                
+                <div class="mb-5">
+                    <label class="block text-[12px] font-bold text-slate-900 mb-1.5">Pilih Customer</label>
+                    <select class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[14px] font-medium text-slate-800 focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                        <option>Pilih nama customer yang sudah diinput...</option>
+                        <option>Ahmad Faisal</option>
+                        <option>Siti Aminah</option>
+                        <option>Bapak Sulaiman</option>
+                    </select>
+                </div>
+                
+                <div class="border-2 border-dashed border-slate-300 rounded-2xl bg-white p-8 mt-2 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-slate-50 transition-colors mb-6 shadow-sm active:scale-95">
+                    <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mb-3">
+                        <svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 9a2 2 0 012-2h.93a2 2 0 001.664-.89l.812-1.22A2 2 0 0110.07 4h3.86a2 2 0 011.664.89l.812 1.22A2 2 0 0018.07 7H19a2 2 0 012 2v9a2 2 0 01-2 2H5a2 2 0 01-2-2V9z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 13a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    </div>
+                    <h3 class="text-[15px] font-bold text-slate-900 mb-1">Ambil Foto / Scan Paspor</h3>
+                    <p class="text-[11px] text-slate-500 leading-relaxed">Pastikan halaman biodata terlihat jelas, teks terbaca, dan tidak terpotong (Format JPG/PNG).</p>
+                </div>
+                
+                <button onclick="showGlobalModal('Upload Sukses', 'Paspor berhasil diupload! Tim pusat akan segera memverifikasi.'); navTo('screen-pelanggan');" class="w-full bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Upload Dokumen</button>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
         <!-- SCREEN 2: PRODUK (Dengan Kategori Isotope)     -->
         <!-- ============================================== -->
         <div id="screen-products" class="screen">
-            <!-- Header Fix Tanpa Teks Umroh -->
             <header class="flex items-center justify-between px-4 pt-10 pb-4 bg-white z-10 shrink-0 shadow-sm border-b border-slate-100">
                 <h1 class="text-[18px] font-bold text-slate-900 text-center w-full">Paket Travel</h1>
             </header>
 
-            <!-- Kategori Tabs Fix -->
             <div class="bg-white z-10 shrink-0 border-b border-slate-100 px-4 py-3 overflow-x-auto whitespace-nowrap hide-scrollbar flex gap-2">
                 <button onclick="filterProducts('all')" id="tab-all" class="filter-btn px-4 py-1.5 rounded-full text-[12px] font-bold bg-emerald-theme text-white transition-colors">Semua</button>
                 <button onclick="filterProducts('umroh')" id="tab-umroh" class="filter-btn px-4 py-1.5 rounded-full text-[12px] font-bold bg-slate-100 text-slate-600 transition-colors">Umroh</button>
@@ -219,10 +421,9 @@
             <div class="scrollable-content px-4 pt-4 pb-28">
                 <div class="grid grid-cols-2 gap-3" id="product-grid">
                     
-                    <!-- UMROH 1 -->
                     <div class="product-item umroh bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <img src="https://images.unsplash.com/photo-1565552643952-250824b22c71?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/Flyer_for_Umrah_travel_package_89b835cd.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-theme">Sisa 15</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -231,7 +432,6 @@
                             <div class="mt-auto">
                                 <p class="text-[9px] font-medium text-slate-400">Komisi</p>
                                 <p class="text-[13px] font-extrabold text-emerald-theme mb-2">Rp 500.000</p>
-                                <!-- Membuka Modal Share -->
                                 <button onclick="toggleShareMenu(true)" class="w-full py-1.5 border border-emerald-theme text-emerald-theme rounded-lg text-[11px] font-bold hover:bg-emerald-50 transition-colors flex justify-center items-center gap-1">
                                     <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Share
                                 </button>
@@ -239,11 +439,9 @@
                         </div>
                     </div>
 
-                    <!-- UMROH 2 (Plus Turki) -->
                     <div class="product-item umroh bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <!-- Foto Balon Udara -->
-                            <img src="https://images.unsplash.com/photo-1506459225024-1428097a7e18?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/Travel_package_flyer_promotion_10f63d13.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-theme">Sisa 23</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -259,11 +457,9 @@
                         </div>
                     </div>
 
-                    <!-- UMROH 3 (Plus Aqsa) -->
                     <div class="product-item umroh bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <!-- Foto Masjid Al-Aqsa -->
-                            <img src="https://images.unsplash.com/photo-1620353130198-d10fb4e68da3?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/Travel_package_flyer_design_645af11c.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-white/90 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-emerald-theme">Sisa 10</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -278,12 +474,46 @@
                             </div>
                         </div>
                     </div>
+                    
+                    <div class="product-item umroh bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+                        <div class="relative h-28 bg-slate-200">
+                            <img src="img/Umrah_travel_package_flyer_design_5a246a76.jpg" class="w-full h-full object-cover">
+                            <div class="absolute top-2 right-2 bg-red-100 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-red-600 border border-red-200">Sisa 3</div>
+                        </div>
+                        <div class="p-2.5 flex-1 flex flex-col">
+                            <h3 class="text-[12px] font-bold text-slate-900 leading-tight mb-1">Umroh Ramadhan 9 Hari Awal</h3>
+                            <p class="text-[9px] text-slate-500 mb-2 truncate">10 Mar 2027</p>
+                            <div class="mt-auto">
+                                <p class="text-[9px] font-medium text-slate-400">Komisi</p>
+                                <p class="text-[13px] font-extrabold text-emerald-theme mb-2">Rp 750.000</p>
+                                <button onclick="toggleShareMenu(true)" class="w-full py-1.5 border border-emerald-theme text-emerald-theme rounded-lg text-[11px] font-bold hover:bg-emerald-50 transition-colors flex justify-center items-center gap-1">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
 
-                    <!-- LIBURAN 1 (New Zealand) -->
+                    <div class="product-item umroh bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
+                        <div class="relative h-28 bg-slate-200">
+                            <img src="img/Flyer_design_for_Umrah_package_295ced4c.jpg" class="w-full h-full object-cover grayscale">
+                            <div class="absolute top-2 right-2 bg-slate-800 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-white">HABIS</div>
+                        </div>
+                        <div class="p-2.5 flex-1 flex flex-col">
+                            <h3 class="text-[12px] font-bold text-slate-900 leading-tight mb-1">Umroh Ramadhan 15 Hari Terakhir</h3>
+                            <p class="text-[9px] text-slate-500 mb-2 truncate">20 Mar 2027</p>
+                            <div class="mt-auto">
+                                <p class="text-[9px] font-medium text-slate-400">Komisi</p>
+                                <p class="text-[13px] font-extrabold text-emerald-theme mb-2">Rp 1.000.000</p>
+                                <button disabled class="w-full py-1.5 border border-slate-300 text-slate-400 rounded-lg text-[11px] font-bold bg-slate-50 flex justify-center items-center gap-1 cursor-not-allowed">
+                                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"></path></svg> Share
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="product-item liburan bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <!-- Foto Salju New Zealand -->
-                            <img src="https://images.unsplash.com/photo-1507629221898-576a56b530bb?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/School_holiday_trip_flyer_1dc6f200.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-blue-100 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-blue-600 border border-blue-200">Terbatas</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -299,11 +529,9 @@
                         </div>
                     </div>
 
-                    <!-- LIBURAN 2 (Raja Ampat) -->
                     <div class="product-item liburan bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <!-- Foto Raja Ampat -->
-                            <img src="https://images.unsplash.com/photo-1549693578-d683be217e58?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/Travel_adventure_flyer_Raja_Ampat_0f8bc807.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-blue-100 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-blue-600 border border-blue-200">Populer</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -319,11 +547,9 @@
                         </div>
                     </div>
 
-                    <!-- BUSINESS TRIP (Melbourne) -->
                     <div class="product-item business bg-white rounded-xl shadow-sm border border-slate-100 overflow-hidden flex flex-col">
                         <div class="relative h-28 bg-slate-200">
-                            <!-- Foto Melbourne City -->
-                            <img src="https://images.unsplash.com/photo-1514395462725-fb4566210144?auto=format&fit=crop&q=80&w=400&h=300" class="w-full h-full object-cover">
+                            <img src="img/Flyer_design_for_Melbourne_tour_d8329a75.jpg" class="w-full h-full object-cover">
                             <div class="absolute top-2 right-2 bg-purple-100 backdrop-blur-sm px-1.5 py-0.5 rounded text-[9px] font-bold text-purple-700 border border-purple-200">Corp</div>
                         </div>
                         <div class="p-2.5 flex-1 flex flex-col">
@@ -348,12 +574,13 @@
         <!-- ============================================== -->
         <div id="screen-transactions" class="screen bg-slate-50">
             <header class="flex flex-col px-4 pt-10 pb-3 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
-                <h1 class="text-[17px] font-bold text-slate-900 text-center w-full mb-3">Riwayat Transaksi</h1>
+                <h1 class="text-[17px] font-bold text-slate-900 text-center w-full mb-3">Transaksi</h1>
                 <div class="flex gap-2 w-full">
                     <select class="border border-slate-300 rounded-lg px-3 py-2 text-[12px] font-medium text-slate-700 outline-none focus:border-emerald-theme bg-white w-1/2">
                         <option>Semua Status</option>
                         <option>Sukses / Lunas</option>
                         <option>Menunggu DP</option>
+                        <option>Menunggu Pelunasan</option>
                     </select>
                     <select class="border border-slate-300 rounded-lg px-3 py-2 text-[12px] font-medium text-slate-700 outline-none focus:border-emerald-theme flex-1 bg-white">
                         <option>Okt 2026</option>
@@ -376,7 +603,8 @@
 
                 <h3 class="text-[13px] font-bold text-slate-900 mb-3">Daftar Transaksi</h3>
                 <div class="space-y-3">
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+                    
+                    <div onclick="navTo('screen-detil-transaksi')" class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors active:scale-95">
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <span class="text-[13px] font-bold text-slate-900">H. Joko Widodo</span>
@@ -395,13 +623,13 @@
                         </div>
                     </div>
 
-                    <div class="bg-white rounded-xl p-4 shadow-sm border border-slate-100">
+                    <div onclick="navTo('screen-detil-transaksi')" class="bg-white rounded-xl p-4 shadow-sm border border-slate-100 cursor-pointer hover:bg-slate-50 transition-colors active:scale-95">
                         <div class="flex justify-between items-start mb-2">
                             <div>
                                 <span class="text-[13px] font-bold text-slate-900">Siti Aminah</span>
                                 <p class="text-[11px] text-slate-500 mt-0.5">#TRX-002 • Umroh Plus Turki</p>
                             </div>
-                            <div class="bg-amber-100 text-amber-600 text-[9px] font-bold px-2 py-1 rounded">MENUNGGU DP</div>
+                            <div class="bg-amber-100 text-amber-600 text-[9px] font-bold px-2 py-1 rounded">MENUNGGU PELUNASAN</div>
                         </div>
                         <div class="border-t border-slate-100 pt-2 mt-2 flex justify-between items-center">
                             <div>
@@ -413,6 +641,82 @@
                             </div>
                         </div>
                     </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- SCREEN: DETIL TRANSAKSI (+ RIWAYAT PEMBAYARAN) -->
+        <!-- ============================================== -->
+        <div id="screen-detil-transaksi" class="screen bg-slate-50">
+            <header class="flex items-center justify-between px-4 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
+                <button onclick="navTo('screen-transactions')" class="text-slate-800 p-1 -ml-1">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
+                </button>
+                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Detil Transaksi</h1>
+                <div class="w-8"></div>
+            </header>
+            <div class="scrollable-content px-4 pt-5 pb-28">
+                <div class="bg-white rounded-xl p-5 shadow-sm border border-slate-100">
+                    <div class="text-center mb-4 border-b border-slate-100 pb-4">
+                        <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-1">Status Pembayaran</p>
+                        <div id="detil-status-badge" class="inline-block bg-amber-100 text-amber-600 text-[11px] font-bold px-3 py-1 rounded-full mb-3">MENUNGGU PELUNASAN</div>
+                        <h2 id="detil-sisa-tagihan" class="text-3xl font-black text-slate-900">Rp 25.000.000</h2>
+                        <p id="detil-sisa-label" class="text-[11px] text-slate-500 mt-1">Sisa tagihan yang harus dibayar</p>
+                    </div>
+                    
+                    <div class="space-y-3 text-[13px]">
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">No. Invoice</span>
+                            <span class="font-bold text-slate-900">#TRX-002</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Pelanggan</span>
+                            <span class="font-bold text-slate-900">Siti Aminah</span>
+                        </div>
+                        <div class="flex justify-between">
+                            <span class="text-slate-500">Paket</span>
+                            <span class="font-bold text-slate-900 text-right w-1/2">Umroh Plus Turkiye Syawal</span>
+                        </div>
+                        <div class="flex justify-between pt-3 border-t border-slate-100">
+                            <span class="text-slate-500">Total Harga</span>
+                            <span class="font-bold text-slate-900">Rp 35.000.000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HISTORICAL UI VIEW (RIWAYAT PEMBAYARAN) -->
+                <div id="payment-history-area" class="bg-white rounded-xl p-5 shadow-sm border border-slate-100 mt-4">
+                    <h3 class="text-[14px] font-bold text-slate-900 mb-4">Riwayat Pembayaran</h3>
+                    <div class="relative border-l-2 border-slate-200 ml-2 space-y-5">
+                        <!-- Uang Muka (Selalu Tampil) -->
+                        <div class="relative pl-5">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 bg-emerald-500 rounded-full border-4 border-white shadow-sm"></div>
+                            <p class="text-[11px] text-slate-500 font-medium">10 Okt 2026, 14:30</p>
+                            <h4 class="text-[13px] font-bold text-slate-900">Uang Muka (DP)</h4>
+                            <p class="text-[14px] font-black text-emerald-600">Rp 10.000.000</p>
+                            <div class="mt-1 inline-block bg-emerald-50 text-emerald-700 text-[9px] px-2 py-0.5 rounded font-bold border border-emerald-100">DITERIMA</div>
+                        </div>
+                        
+                        <!-- Pelunasan (Di-hide dulu, akan dimunculkan via JS setelah konfirmasi) -->
+                        <div id="history-pelunasan" class="relative pl-5 hidden">
+                            <div class="absolute -left-[9px] top-1 w-4 h-4 bg-blue-500 rounded-full border-4 border-white shadow-sm"></div>
+                            <p class="text-[11px] text-slate-500 font-medium">Hari Ini</p>
+                            <h4 class="text-[13px] font-bold text-slate-900">Pelunasan Tagihan</h4>
+                            <p class="text-[14px] font-black text-blue-600">Rp 25.000.000</p>
+                            <div class="mt-1 inline-block bg-blue-50 text-blue-700 text-[9px] px-2 py-0.5 rounded font-bold border border-blue-100">MENUNGGU VERIFIKASI</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 flex flex-col gap-3">
+                    <button onclick="showGlobalModal('Terkirim', 'Tagihan beserta link pembayaran telah dikirim ke WA Siti Aminah!');" class="w-full py-3.5 border border-emerald-theme text-emerald-theme bg-white rounded-xl text-[14px] font-bold hover:bg-emerald-50 transition-colors flex justify-center items-center gap-2 active:scale-95 shadow-sm">
+                        <i class="fab fa-whatsapp text-lg"></i> Kirim Tagihan via WA
+                    </button>
+                    <!-- Trigger Modal Form Pembayaran -->
+                    <button onclick="togglePaymentMenu(true)" class="w-full py-3.5 bg-emerald-theme text-white rounded-xl text-[14px] font-bold shadow-md hover:bg-emerald-800 transition-colors flex justify-center items-center gap-2 active:scale-95">
+                        <i class="fas fa-check-circle text-lg"></i> Konfirmasi Pembayaran
+                    </button>
                 </div>
             </div>
         </div>
@@ -489,7 +793,7 @@
                         <input type="text" value="Budi Santoso" class="w-full border border-slate-300 rounded-xl px-4 py-3 text-[14px] font-medium text-slate-800 focus:outline-none focus:border-emerald-theme transition-colors">
                     </div>
                 </div>
-                <button onclick="navTo('screen-dashboard');" class="w-full mt-6 bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Simpan Rekening</button>
+                <button onclick="showGlobalModal('Tersimpan', 'Rekening berhasil disimpan!'); navTo('screen-dashboard');" class="w-full mt-6 bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Simpan Rekening</button>
             </div>
         </div>
 
@@ -501,7 +805,7 @@
                 <button onclick="navTo('screen-dashboard')" class="text-slate-800 p-1 -ml-1">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 </button>
-                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Tarik Komisi</h1>
+                <h1 class="text-[17px] font-bold text-slate-900 flex-1 text-center">Tarik Dana</h1>
                 <div class="w-8"></div>
             </header>
             <div class="scrollable-content px-5 pt-6 pb-28">
@@ -525,9 +829,10 @@
 
                 <div>
                     <label class="block text-[12px] font-bold text-slate-900 mb-1.5">Nominal Penarikan</label>
-                    <div class="relative">
-                        <span class="absolute left-4 top-1/2 -translate-y-1/2 font-bold text-slate-400">Rp</span>
-                        <input type="number" placeholder="0" class="w-full border border-slate-300 rounded-xl pl-10 pr-4 py-3.5 text-[16px] font-bold text-slate-900 focus:outline-none focus:border-emerald-theme bg-white transition-colors">
+                    <div class="relative flex items-center">
+                        <span class="absolute left-4 text-[14px] font-bold text-slate-500">Rp</span>
+                        <!-- Filter JS untuk input angka ribuan dan rata kanan -->
+                        <input type="text" oninput="formatRupiah(this)" placeholder="0" class="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3.5 text-[16px] font-black text-slate-900 bg-white focus:border-emerald-theme outline-none transition-colors text-right">
                     </div>
                     <div class="flex gap-2 mt-3">
                         <button class="flex-1 py-2 bg-slate-100 hover:bg-slate-200 rounded-lg text-[11px] font-bold text-slate-600 transition-colors">25%</button>
@@ -537,7 +842,7 @@
                 </div>
 
                 <div class="mt-8">
-                    <button onclick="alert('Permintaan penarikan dana berhasil dikirim! Dana akan masuk 1x24 jam.'); navTo('screen-dashboard');" class="w-full bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Ajukan Penarikan</button>
+                    <button onclick="showGlobalModal('Permintaan Terkirim', 'Permintaan penarikan dana berhasil dikirim! Dana akan masuk 1x24 jam.'); navTo('screen-dashboard');" class="w-full bg-emerald-theme text-white text-[15px] font-bold rounded-xl py-3.5 shadow-md transition-colors active:scale-95">Ajukan Penarikan</button>
                     <p class="text-center text-[10px] text-slate-400 mt-3">Proses pencairan maksimal 1x24 jam kerja.</p>
                 </div>
             </div>
@@ -547,28 +852,24 @@
         <!-- GLOBAL BOTTOM NAVIGATION                       -->
         <!-- ============================================== -->
         <nav id="global-nav" class="absolute bottom-0 w-full bg-white border-t border-slate-200 flex justify-between items-center px-4 py-2 z-30 pb-6 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] hidden">
-            <!-- Dasbor -->
             <button onclick="navTo('screen-dashboard')" data-target="screen-dashboard" class="bottom-nav-item flex flex-col items-center flex-1 text-emerald-theme transition-colors bg-transparent border-none outline-none">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
                 </svg>
                 <span class="text-[10px] font-semibold">Dasbor</span>
             </button>
-            <!-- Produk -->
             <button onclick="navTo('screen-products')" data-target="screen-products" class="bottom-nav-item flex flex-col items-center flex-1 text-slate-400 hover:text-emerald-theme transition-colors bg-transparent border-none outline-none">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
                 </svg>
                 <span class="text-[10px] font-medium">Produk</span>
             </button>
-            <!-- Transaksi -->
             <button onclick="navTo('screen-transactions')" data-target="screen-transactions" class="bottom-nav-item flex flex-col items-center flex-1 text-slate-400 hover:text-emerald-theme transition-colors bg-transparent border-none outline-none">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                 </svg>
                 <span class="text-[10px] font-medium">Transaksi</span>
             </button>
-            <!-- Lainnya -->
             <button onclick="toggleOthersMenu(true)" data-target="lainnya" class="bottom-nav-item flex flex-col items-center flex-1 text-slate-400 hover:text-emerald-theme transition-colors bg-transparent border-none outline-none">
                 <svg class="w-6 h-6 mb-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path>
@@ -581,14 +882,70 @@
         <!-- ============================================== -->
         <!-- POPUP & MODAL (BOTTOM SHEETS)                  -->
         <!-- ============================================== -->
-        
+
+        <!-- Modal Form: Konfirmasi Pembayaran (NEW FORM) -->
+        <div id="paymentMenuOverlay" class="absolute inset-0 bg-slate-900/40 z-40 hidden opacity-0 transition-opacity duration-300" onclick="togglePaymentMenu(false)"></div>
+        <div id="paymentMenuSheet" class="absolute bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 transform translate-y-full transition-transform duration-300 pb-8 pt-3">
+            <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5"></div>
+            <div class="px-6">
+                <h3 class="text-[16px] font-bold text-slate-900 mb-5 text-center">Konfirmasi Pembayaran</h3>
+                <div class="space-y-4 mb-6">
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-700 mb-1.5">Metode Pembayaran</label>
+                        <select class="w-full border border-slate-300 rounded-xl px-4 py-3.5 text-[13px] bg-slate-50 focus:border-emerald-theme outline-none">
+                            <option>Transfer Bank BCA</option>
+                            <option>Transfer Bank BSI</option>
+                            <option>Virtual Account</option>
+                            <option>QRIS</option>
+                            <option>Tunai (Cash)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-700 mb-1.5">Nominal Pembayaran</label>
+                        <div class="relative flex items-center">
+                            <span class="absolute left-4 text-[14px] font-bold text-slate-500">Rp</span>
+                            <input type="text" oninput="formatRupiah(this)" placeholder="0" class="w-full border border-slate-300 rounded-xl pl-12 pr-4 py-3.5 text-[16px] font-black text-slate-900 bg-white focus:border-emerald-theme outline-none text-right transition-colors">
+                        </div>
+                    </div>
+                    <div>
+                        <label class="block text-[12px] font-bold text-slate-700 mb-1.5">Upload Bukti Pembayaran</label>
+                        <div class="w-full border-2 border-dashed border-slate-300 rounded-xl p-5 flex flex-col items-center justify-center text-slate-500 bg-slate-50 active:bg-slate-100 cursor-pointer transition-colors">
+                            <i class="fas fa-cloud-upload-alt text-2xl mb-2 text-slate-400"></i>
+                            <span class="text-[11px] font-bold text-slate-700">Ambil Foto / File (JPG, PNG, PDF)</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="submitPayment()" class="w-full py-3.5 bg-emerald-theme text-white rounded-xl text-[14px] font-bold shadow-md hover:bg-emerald-800 transition-colors active:scale-95">Simpan Pembayaran</button>
+            </div>
+        </div>
+
         <!-- Menu Lainnya -->
         <div id="othersMenuOverlay" class="absolute inset-0 bg-slate-900/40 z-40 hidden opacity-0 transition-opacity duration-300" onclick="toggleOthersMenu(false)"></div>
         <div id="othersMenuSheet" class="absolute bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 transform translate-y-full transition-transform duration-300 pb-8 pt-3">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5"></div>
             
             <div class="px-6">
-                <!-- Akun -->
+
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pengaturan</div>
+                <div class="flex flex-col gap-1 mb-4">
+                    <button onclick="toggleOthersMenu(false); setTimeout(() => navTo('screen-bank'), 300);" class="flex items-center gap-3 w-full py-2.5 text-left text-[14px] font-semibold text-slate-700 hover:bg-slate-50 rounded-xl px-3 -mx-3 transition-colors">
+                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+                        Bank Penerima
+                    </button>
+                </div>
+
+                <div class="h-px bg-slate-100 my-4 -mx-6"></div>
+
+                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Finansial</div>
+                <div class="flex flex-col gap-1">
+                    <button onclick="toggleOthersMenu(false); setTimeout(() => navTo('screen-withdraw'), 300);" class="flex items-center gap-3 w-full py-2.5 text-left text-[14px] font-semibold text-emerald-theme hover:bg-emerald-50 rounded-xl px-3 -mx-3 transition-colors">
+                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        Tarik Dana
+                    </button>
+                </div>
+
+                <div class="h-px bg-slate-100 my-4 -mx-6"></div>
+
                 <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Akun</div>
                 <div class="flex flex-col gap-1 mb-4">
                     <button onclick="toggleOthersMenu(false); setTimeout(() => navTo('screen-profile'), 300);" class="flex items-center gap-3 w-full py-2.5 text-left text-[14px] font-semibold text-slate-700 hover:bg-slate-50 rounded-xl px-3 -mx-3 transition-colors">
@@ -601,31 +958,10 @@
                     </button>
                 </div>
                 
-                <div class="h-px bg-slate-100 my-4 -mx-6"></div>
-
-                <!-- Pengaturan -->
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Pengaturan</div>
-                <div class="flex flex-col gap-1 mb-4">
-                    <button onclick="toggleOthersMenu(false); setTimeout(() => navTo('screen-bank'), 300);" class="flex items-center gap-3 w-full py-2.5 text-left text-[14px] font-semibold text-slate-700 hover:bg-slate-50 rounded-xl px-3 -mx-3 transition-colors">
-                        <svg class="w-5 h-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
-                        Bank Penerima
-                    </button>
-                </div>
-
-                <div class="h-px bg-slate-100 my-4 -mx-6"></div>
-
-                <!-- Finansial -->
-                <div class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Finansial</div>
-                <div class="flex flex-col gap-1">
-                    <button onclick="toggleOthersMenu(false); setTimeout(() => navTo('screen-withdraw'), 300);" class="flex items-center gap-3 w-full py-2.5 text-left text-[14px] font-semibold text-emerald-theme hover:bg-emerald-50 rounded-xl px-3 -mx-3 transition-colors">
-                        <svg class="w-5 h-5 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        Ambil Komisi
-                    </button>
-                </div>
             </div>
         </div>
 
-        <!-- Notifikasi -->
+        <!-- Notifikasi Dasbor -->
         <div id="notifMenuOverlay" class="absolute inset-0 bg-slate-900/40 z-40 hidden opacity-0 transition-opacity duration-300" onclick="toggleNotifMenu(false)"></div>
         <div id="notifMenuSheet" class="absolute bottom-0 left-0 w-full bg-white rounded-t-3xl shadow-[0_-10px_40px_rgba(0,0,0,0.1)] z-50 transform translate-y-full transition-transform duration-300 pb-8 pt-3">
             <div class="w-12 h-1.5 bg-slate-200 rounded-full mx-auto mb-5"></div>
@@ -650,31 +986,31 @@
                 <h3 class="text-[15px] font-bold text-slate-900 mb-4 text-center">Bagikan Paket Ini Ke</h3>
                 
                 <div class="grid grid-cols-5 gap-2 mb-4">
-                    <button onclick="alert('Membuka Instagram Post'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
+                    <button onclick="showGlobalModal('Dialihkan', 'Membuka Instagram Post...'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
                         <div class="w-12 h-12 rounded-full bg-gradient-to-tr from-yellow-400 via-pink-500 to-purple-600 text-white flex items-center justify-center text-xl shadow-sm">
                             <i class="fab fa-instagram"></i>
                         </div>
                         <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">IG Post</span>
                     </button>
-                    <button onclick="alert('Membuka Instagram Story'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
+                    <button onclick="showGlobalModal('Dialihkan', 'Membuka Instagram Story...'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
                         <div class="w-12 h-12 rounded-full border-[3px] border-pink-500 bg-white text-pink-500 flex items-center justify-center text-xl shadow-sm">
                             <i class="fab fa-instagram"></i>
                         </div>
                         <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">IG Story</span>
                     </button>
-                    <button onclick="alert('Membuka WhatsApp'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
+                    <button onclick="showGlobalModal('Dialihkan', 'Membuka WhatsApp...'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
                         <div class="w-12 h-12 rounded-full bg-[#25D366] text-white flex items-center justify-center text-xl shadow-sm">
                             <i class="fab fa-whatsapp"></i>
                         </div>
                         <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">WhatsApp</span>
                     </button>
-                    <button onclick="alert('Membuka WhatsApp Status'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
+                    <button onclick="showGlobalModal('Dialihkan', 'Membuka WhatsApp Status...'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
                         <div class="w-12 h-12 rounded-full border-[3px] border-[#25D366] bg-white text-[#25D366] flex items-center justify-center text-xl shadow-sm">
                             <i class="fab fa-whatsapp"></i>
                         </div>
                         <span class="text-[9px] font-bold text-slate-600 text-center leading-tight">WA Status</span>
                     </button>
-                    <button onclick="alert('Membuka TikTok'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
+                    <button onclick="showGlobalModal('Dialihkan', 'Membuka TikTok...'); toggleShareMenu(false);" class="flex flex-col items-center gap-2">
                         <div class="w-12 h-12 rounded-full bg-slate-900 text-white flex items-center justify-center text-xl shadow-sm">
                             <i class="fab fa-tiktok"></i>
                         </div>
@@ -684,16 +1020,72 @@
                 
                 <div class="bg-slate-50 border border-slate-200 rounded-xl p-3 flex justify-between items-center mt-2">
                     <span class="text-[12px] text-slate-500 truncate w-3/4">sjg.com/paket/umroh?ref=BUDI123</span>
-                    <button onclick="alert('Link tersalin!'); toggleShareMenu(false);" class="text-[11px] font-bold text-emerald-theme bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">Salin Link</button>
+                    <button onclick="showGlobalModal('Berhasil Disalin', 'Link berhasil disalin!'); toggleShareMenu(false);" class="text-[11px] font-bold text-emerald-theme bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100">Salin Link</button>
                 </div>
             </div>
         </div>
 
     </div>
 
-    <!-- SPA Navigation Script -->
+    <!-- SPA Navigation & Logic Script -->
     <script>
         let currentRole = 'affi';
+
+        // Custom Modal Function (Pengganti Alert)
+        function showGlobalModal(title, message, isError = false) {
+            document.getElementById('global-modal-title').innerText = title;
+            document.getElementById('global-modal-message').innerText = message;
+            
+            const iconBg = document.getElementById('global-modal-icon-bg');
+            const icon = document.getElementById('global-modal-icon');
+            const btn = document.getElementById('global-modal-btn');
+            
+            if (isError) {
+                iconBg.className = 'absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-red-500 rounded-full flex items-center justify-center border-4 border-white shadow-sm';
+                icon.className = 'fas fa-times text-white text-2xl';
+                btn.className = 'w-full bg-red-500 text-white rounded-xl py-3.5 text-[15px] font-bold shadow-md hover:bg-red-600 transition-colors active:scale-95';
+            } else {
+                iconBg.className = 'absolute -top-8 left-1/2 transform -translate-x-1/2 w-16 h-16 bg-emerald-500 rounded-full flex items-center justify-center border-4 border-white shadow-sm';
+                icon.className = 'fas fa-check text-white text-2xl';
+                btn.className = 'w-full bg-emerald-500 text-white rounded-xl py-3.5 text-[15px] font-bold shadow-md hover:bg-emerald-600 transition-colors active:scale-95';
+            }
+
+            const overlay = document.getElementById('global-modal-overlay');
+            const card = document.getElementById('global-modal-card');
+            
+            overlay.classList.remove('hidden');
+            setTimeout(() => { 
+                overlay.classList.remove('opacity-0'); 
+                card.classList.remove('scale-95'); 
+            }, 10);
+        }
+
+        function hideGlobalModal() {
+            const overlay = document.getElementById('global-modal-overlay');
+            const card = document.getElementById('global-modal-card');
+            
+            overlay.classList.add('opacity-0'); 
+            card.classList.add('scale-95');
+            setTimeout(() => { 
+                overlay.classList.add('hidden'); 
+            }, 300);
+        }
+
+        // Auto Format Rupiah (Titik Ribuan)
+        function formatRupiah(obj) {
+            let val = obj.value.replace(/[^,\d]/g, '').toString();
+            let split = val.split(',');
+            let sisa = split[0].length % 3;
+            let rupiah = split[0].substr(0, sisa);
+            let ribuan = split[0].substr(sisa).match(/\d{3}/gi);
+
+            if (ribuan) {
+                let separator = sisa ? '.' : '';
+                rupiah += separator + ribuan.join('.');
+            }
+            rupiah = split[1] != undefined ? rupiah + ',' + split[1] : rupiah;
+            obj.value = rupiah;
+        }
 
         function handleLogin() {
             const user = document.getElementById('login-username').value;
@@ -708,7 +1100,7 @@
                 setupRoleUI();
                 navTo('screen-dashboard');
             } else {
-                alert('Username atau Password salah!\nGunakan affi/demo atau resell/demo');
+                showGlobalModal('Gagal Login', 'Username atau Password salah! Gunakan affi/demo atau resell/demo.', true);
             }
         }
 
@@ -744,8 +1136,6 @@
                 nav.classList.add('text-slate-400');
                 
                 const target = nav.dataset.target;
-                const svg = nav.querySelector('svg');
-                
                 const isOthersActive = target === 'lainnya' && (screenId === 'screen-profile' || screenId === 'screen-bank' || screenId === 'screen-withdraw');
 
                 if (target === screenId || isOthersActive) {
@@ -770,12 +1160,14 @@
             
             const globalNav = document.getElementById('global-nav');
             const homeIndicator = document.getElementById('global-home-indicator');
-            const mainScreens = ['screen-dashboard', 'screen-products', 'screen-transactions', 'screen-profile', 'screen-bank', 'screen-withdraw'];
+            const mainScreens = ['screen-dashboard', 'screen-products', 'screen-transactions', 'screen-profile', 'screen-bank', 'screen-withdraw', 'screen-detil-transaksi'];
             
             if (mainScreens.includes(screenId)) {
                 globalNav.classList.remove('hidden');
                 homeIndicator.classList.remove('hidden');
-                setActiveNav(screenId);
+                if(screenId !== 'screen-detil-transaksi') {
+                    setActiveNav(screenId);
+                }
             } else {
                 globalNav.classList.add('hidden');
                 homeIndicator.classList.add('hidden');
@@ -818,11 +1210,41 @@
             }
         }
 
+        // JS Khusus Form Pembayaran (Detil Transaksi)
+        function togglePaymentMenu(show) {
+            const overlay = document.getElementById('paymentMenuOverlay');
+            const sheet = document.getElementById('paymentMenuSheet');
+            if (show) {
+                overlay.classList.remove('hidden');
+                setTimeout(() => { overlay.classList.remove('opacity-0'); sheet.classList.remove('translate-y-full'); }, 10);
+            } else {
+                overlay.classList.add('opacity-0'); sheet.classList.add('translate-y-full');
+                setTimeout(() => { overlay.classList.add('hidden'); }, 300);
+            }
+        }
+
+        function submitPayment() {
+            togglePaymentMenu(false);
+            
+            setTimeout(() => {
+                showGlobalModal('Berhasil', 'Bukti pembayaran berhasil disimpan!');
+                
+                // Ubah status Badge dan Sisa Tagihan
+                document.getElementById('detil-status-badge').innerText = 'MENUNGGU VERIFIKASI';
+                document.getElementById('detil-status-badge').className = 'inline-block bg-blue-100 text-blue-600 text-[11px] font-bold px-3 py-1 rounded-full mb-3';
+                document.getElementById('detil-sisa-tagihan').innerText = 'Rp 0';
+                document.getElementById('detil-sisa-label').innerText = 'Pembayaran sedang diverifikasi pusat';
+                
+                // Munculkan Riwayat Pelunasan
+                document.getElementById('history-pelunasan').classList.remove('hidden');
+                
+            }, 400);
+        }
+
         // ==========================================
         // ISOTOPE FILTER LOGIC (Untuk Screen Produk)
         // ==========================================
         function filterProducts(category) {
-            // Update styling on tabs
             const tabs = ['all', 'umroh', 'liburan', 'business'];
             tabs.forEach(t => {
                 const btn = document.getElementById('tab-' + t);
@@ -835,7 +1257,6 @@
                 }
             });
 
-            // Filter the items
             const items = document.querySelectorAll('.product-item');
             items.forEach(item => {
                 if (category === 'all' || item.classList.contains(category)) {
