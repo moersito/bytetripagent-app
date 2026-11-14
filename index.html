@@ -10,50 +10,8 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192/047857/ffffff.png?text=BTA">
-
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        
-        body { font-family: 'Inter', sans-serif; background-color: #f0f2f5; margin: 0; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
-        
-        .mobile-app-container { width: 100%; max-width: 414px; height: 100vh; max-height: 896px; background-color: #ffffff; position: relative; overflow: hidden; display: flex; flex-direction: column; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25); }
-        @media (min-width: 415px) { .mobile-app-container { height: 850px; border-radius: 32px; border: 8px solid #333; } }
-
-        .screen { display: none; flex-direction: column; height: 100%; width: 100%; position: absolute; top: 0; left: 0; background-color: #f8fafc; animation: fadeIn 0.2s ease-in-out; }
-        .screen.active { display: flex; }
-
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
-
-        .scrollable-content { -ms-overflow-style: none; scrollbar-width: none; flex-grow: 1; overflow-y: auto; }
-        .scrollable-content::-webkit-scrollbar { display: none; }
-
-        .text-emerald-theme { color: #047857; }
-        .bg-emerald-theme { background-color: #047857; }
-        .border-emerald-theme { border-color: #047857; }
-        .text-emerald-light { color: #10b981; }
-
-        /* Hide elements for isotope filtering */
-        .filter-hidden { display: none !important; }
-        .hide-scrollbar::-webkit-scrollbar { display: none; }
-        .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-    </style>
-</head>
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ByteTrip Agent</title>
-    
-    <!-- PWA META TAGS -->
-    <meta name="theme-color" content="#047857">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <link rel="manifest" href="manifest.json">
-    <link rel="apple-touch-icon" href="https://placehold.co/192x192/047857/ffffff.png?text=BTA">
+    <link rel="icon" type="image/x-icon" href="img/ByteTripAgent_logo_icon_256.png">
+    <link rel="apple-touch-icon" href="img/ByteTripAgent_logo_icon_256.png">
 
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -110,7 +68,7 @@
             <div class="flex-1 flex flex-col justify-center px-8 relative z-10">
                 
                 <div class="text-center mb-10">
-                    <img src="img/ByteTripAgent_logo.jpg" alt="ByteTrip Agent Logo" class="h-24 mx-auto mb-2 object-contain mix-blend-multiply">
+                    <img src="img/ByteTripAgent_logo.png" alt="ByteTrip Agent Logo" class="h-24 mx-auto mb-2 object-contain mix-blend-multiply">
                     <p class="text-[13px] text-slate-500 mt-2">Sistem Afiliasi & Kemitraan Travel</p>
                 </div>
 
@@ -151,7 +109,7 @@
             
             <header class="flex justify-between items-center px-5 pt-10 pb-4 bg-white z-10 shrink-0 border-b border-slate-100 shadow-sm">
                 <div class="flex items-center">
-                    <img src="img/ByteTripAgent_logo.jpg" alt="ByteTrip Agent" class="h-9 object-contain mix-blend-multiply">
+                    <img src="img/ByteTripAgent_logo.png" alt="ByteTrip Agent" class="h-9 object-contain mix-blend-multiply">
                 </div>
                 <div class="flex items-center gap-3">
                     <button onclick="toggleNotifMenu(true)" class="relative cursor-pointer text-slate-800 hover:text-emerald-theme transition-colors">
