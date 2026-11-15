@@ -1,6 +1,6 @@
 {
   "name": "ByteTrip Agent",
-  "short_name": "ByteAgent",
+  "short_name": "ByteTrip Agent",
   "description": "Sistem Afiliasi & Kemitraan Umroh",
   "start_url": "./index.html",
   "display": "standalone",
